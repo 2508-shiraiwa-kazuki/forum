@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.util.Date;
 
+
 //@Entityと@Tableを指定することでpublic class ReportがDBのreportテーブルと関連付けられている
 @Entity
 @Table(name = "report")
@@ -27,8 +28,8 @@ public class Report {
     //DBのcontentフィールドとの関連付け
     @Column
     private String content;
-    @Column
+    @Column(name = "created_date")
     private Date createdDate;
-    @Column
+    @Column(name = "updated_date")
     private Date updatedDate;
 }

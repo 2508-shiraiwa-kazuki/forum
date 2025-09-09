@@ -38,8 +38,8 @@ public class ReportService {
             Report result = results.get(i);
             report.setId(result.getId());
             report.setContent(result.getContent());
-            result.setCreatedDate(result.getCreatedDate());
-            result.setUpdatedDate(result.getUpdatedDate());
+            report.setCreatedDate(result.getCreatedDate());
+            report.setUpdatedDate(result.getUpdatedDate());
             reports.add(report);
         }
         return reports;

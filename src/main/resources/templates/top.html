@@ -23,8 +23,8 @@
             投稿 : <span th:text="${content.content}"/>
         </div>
         <div>
-            投稿日時 : <span th:text="${content.createdDate}"/><br/>
-            更新日時 : <span th:text="${content.updatedDate}"/>
+            投稿日時 : <time th:datetime="${content.createdDate}"/><br/>
+            更新日時 : <time th:datetime="${content.updatedDate}"/>
         </div>
         <!-- 編集ボタン -->
         <div class="edit-button">
