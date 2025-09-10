@@ -10,6 +10,14 @@
 <div class="header-contents">
     <h1>匿名掲示板</h1>
 </div>
+<div class="filter">
+    <form action="/" method="get">
+        <!-- valueの設定は絞り込み後も入力内容を保持しておくため -->
+        開始日 : <input type="date" name="start" value="${start}"><br/>
+        終了日 : <input type="date" name="end" value="${end}">
+        <input type="submit" value="絞り込み">
+    </form>
+</div>
 <div class="main-contents">
     <a href="/new">
         <button class="new-button" type="button">新規投稿</button>
@@ -23,8 +31,8 @@
             投稿 : <span th:text="${content.content}"/>
         </div>
         <div>
-            投稿日時 : <time th:datetime="${content.createdDate}"/><br/>
-            更新日時 : <time th:datetime="${content.updatedDate}"/>
+            投稿日時 : <span th:text="${content.createdDate}"/><br/>
+            更新日時 : <span th:text="${content.updatedDate}"/>
         </div>
         <!-- 編集ボタン -->
         <div class="edit-button">
@@ -62,6 +70,7 @@
         <div class="comment-form">
             <form th:action="@{/comment/{contentId}(contentId=${content.id})}" th:method="post" th:object="${commentForm}">
                 <div class="form-area">
+                    <div class="errorMessages" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
                     <textarea class="tweet-box" th:field="${commentForm.comment}" size="20" maxlength="200" /></textarea><br/>
                     <input type="submit" value="コメント送信" />
                 </div>

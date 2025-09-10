@@ -9,8 +9,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
+import java.sql.Timestamp;
 
 //@Entityと@Tableを指定することでpublic class ReportがDBのreportテーブルと関連付けられている
 @Entity
@@ -18,18 +17,19 @@ import java.util.Date;
 @Getter
 @Setter
 public class Report {
-    //@Idと@Culumn併せてDBのIdフィールドとの関連付け
+    // @Idと@Culumn併せてDBのIdフィールドとの関連付け
     @Id
     @Column
-    //AUTO_INCREMENTを付与する（自動採番）
-    //IDENTITYを指定する場合はDBでIdの型をSERIALに指定する必要がある
+    // AUTO_INCREMENTを付与する（自動採番）
+    // IDENTITYを指定する場合はDBでIdの型をSERIALに指定する必要がある
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    //DBのcontentフィールドとの関連付け
+    // DBのcontentカラムとの関連付け
     @Column
     private String content;
-    @Column(name = "created_date")
-    private Date createdDate;
-    @Column(name = "updated_date")
-    private Date updatedDate;
+    // insertable・updatable = 登録・更新時に日時を上書きする・しない設定
+    @Column(name = "created_date", insertable = false,updatable = false)
+    private Timestamp createdDate;
+    @Column(name = "updated_date", insertable = false, updatable = true)
+    private Timestamp updatedDate;
 }

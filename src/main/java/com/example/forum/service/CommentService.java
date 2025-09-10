@@ -2,17 +2,24 @@ package com.example.forum.service;
 
 import com.example.forum.controller.form.CommentForm;
 import com.example.forum.repository.CommentRepository;
+import com.example.forum.repository.ReportRepository;
 import com.example.forum.repository.entity.Comment;
+import com.example.forum.repository.entity.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class CommentService {
     @Autowired
     CommentRepository commentRepository;
+    @Autowired
+    ReportRepository reportRepository;
 
     /*
      * コメントの表示
@@ -21,7 +28,7 @@ public class CommentService {
      */
     public List<CommentForm> findAllComment(){
         // コメントを全件取得し、リストに格納
-        List<Comment> results = commentRepository.findAll();
+        List<Comment> results = commentRepository.findAllByOrderByUpdatedDateDesc();
         // 取得した結果をEntityからFormに変換してControllerに返す
         return setCommentForm(results);
     }
@@ -47,7 +54,14 @@ public class CommentService {
      * やりたいこと：Controllerから渡されたcommentFormをEntityに変換してCommentRepositoryへ渡す
      */
     public void saveComment(CommentForm commentForm){
+        // コメントの登録
         commentRepository.save(setCommentEntity(commentForm));
+        // コメントの登録に合わせて元の投稿の更新日時を更新するため、元の投稿データを取得
+        Report updateReport = reportRepository.findById(commentForm.getContentId()).orElse(null);
+        // 取得した投稿データの更新日時にメソッド実行時の現在時刻をセット
+        updateReport.setUpdatedDate(Timestamp.valueOf(LocalDateTime.now()));
+        // saveメソッドを実行
+        reportRepository.save(updateReport);
     }
 
     private Comment setCommentEntity(CommentForm commentForm){

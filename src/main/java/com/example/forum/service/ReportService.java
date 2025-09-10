@@ -3,13 +3,15 @@ package com.example.forum.service;
 import com.example.forum.controller.form.ReportForm;
 import com.example.forum.repository.ReportRepository;
 import com.example.forum.repository.entity.Report;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 // Serviceの宣言（これがないとControllerと関連づかない）
 @Service
@@ -19,13 +21,37 @@ public class ReportService {
     ReportRepository reportRepository;
 
     /*
-     * レコード全件取得処理
+     * レコード全件取得処理 + 日付絞り込み
      */
-    public List<ReportForm> findAllReport() {
-        List<Report> results = reportRepository.findAll();
+    public List<ReportForm> findAllReport(String startDate, String endDate) {
+        // 現在時刻の取得と形式の指定
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        // 開始日の設定
+        String startTime;
+        if(!StringUtils.isBlank(startDate)){
+            startTime = startDate + " 00:00:00";
+        } else {
+            startTime = "2020-01-01 00:00:00";
+        }
+        // 参照するDBのカラム型に合わせるためTimeStamp型に変換
+        Timestamp start = Timestamp.valueOf(startTime);
+
+        // 終了日の設定
+        String endTime;
+        if(!StringUtils.isBlank(endDate)){
+            endTime = endDate + " 23:59:59";
+        } else {
+            // 現在時刻に設定
+            endTime = sdf.format(now);;
+        }
+        Timestamp end = Timestamp.valueOf(endTime);
+
+        // ReportRepositoryへfindByCreatedDateBetweenで渡す
+        List<Report> results = reportRepository.findByCreatedDateBetweenOrderByUpdatedDateDesc(start, end);
         // このあとViewに返すため、Entity → Formに入れなおす
-        List<ReportForm> reports = setReportForm(results);
-        return reports;
+        return setReportForm(results);
     }
     /*
      * DBから取得したデータをFormに設定

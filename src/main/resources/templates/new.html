@@ -13,6 +13,12 @@
     <form method="post" action="/add" th:object="${formModel}">
         <div class="form-area">
             <label>投稿内容</label>
+            <!--
+            th:if="${#fields.hasErrors('<フィールド名>')}" th:errors="∗{<フィールド名>}"
+            「<フィールド名>でエラーがあった場合は、<フィールド名>で設定されたエラーメッセージを表示する」という意味。
+            今回はReportFormでcontentのフィールドに@NotBlankを付与している。
+            -->
+            <div class="errorMessages" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
             <textarea class="tweet-box" th:field="*{content}" size="20" maxlength="200" /></textarea><br/>
             <input type="submit" value="投稿" />
         </div>
