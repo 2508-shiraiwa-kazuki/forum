@@ -12,8 +12,10 @@ public class CommentForm {
 
     private int id;
     private int contentId;
+
     @NotBlank(message = "コメントを入力してください")
     private String comment;
+
     private Timestamp createdDate;
     private Timestamp updatedDate;
 

@@ -150,7 +150,18 @@ public class ForumController {
                                       @ModelAttribute("commentForm") @Validated CommentForm commentForm,
                                       BindingResult result){
         if(result.hasErrors()){
-            return new ModelAndView("redirect:/");
+            ModelAndView mav = new ModelAndView();
+            // 投稿を全件取得
+            List<ReportForm> contentData = reportService.findAllReport(null, null);
+            // コメントを全件取得
+            List<CommentForm> commentData = commentService.findAllComment();
+            // 画面遷移先を指定
+            mav.setViewName("/top");
+            // 投稿データオブジェクトを補完
+            mav.addObject("contents", contentData);
+            mav.addObject("comments", commentData);
+            mav.addObject("errorId", contentId);
+            return mav;
         }
         //Form「commentForm」にcontentIdを格納
         commentForm.setContentId(contentId);
@@ -176,7 +187,14 @@ public class ForumController {
      * コメントの更新
      */
     @PutMapping("/commentEdit/{commentId}")
-    public ModelAndView updateComment(@PathVariable Integer commentId, @ModelAttribute("commentEdit") CommentForm comment){
+    public ModelAndView updateComment(@PathVariable Integer commentId,
+                                      @ModelAttribute("commentEdit") @Validated CommentForm comment,
+                                      BindingResult result){
+        if(result.hasErrors()){
+            ModelAndView mav = new ModelAndView();
+            mav.setViewName("/commentEdit");
+            return mav;
+        }
         comment.setId(commentId);
         commentService.saveComment(comment);
         return new ModelAndView("redirect:/");

@@ -12,8 +12,9 @@
 <div class="main-contents">
     <form th:action="@{/commentEdit/{commentId}(commentId=${commentEdit.id})}" th:object="${commentEdit}" th:method="put">
         <div class="form-area">
-            <lavel>コメント内容</lavel>
-            <textarea class="tweet-box" th:field="*{comment}" size="20" maxlength="200" /><br/>
+            <label>コメント内容</label>
+            <div class="errorMessages" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
+            <textarea class="tweet-box" th:field="*{comment}" size="20" maxlength="200" ></textarea><br/>
             <input type="hidden" name="contentId" th:value="*{contentId}">
             <input type="submit" value="更新"/>
         </div>

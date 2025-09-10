@@ -13,8 +13,8 @@
 <div class="filter">
     <form action="/" method="get">
         <!-- valueの設定は絞り込み後も入力内容を保持しておくため -->
-        開始日 : <input type="date" name="start" value="${start}"><br/>
-        終了日 : <input type="date" name="end" value="${end}">
+        開始日 : <input type="date" name="start" th:value="${start}"><br/>
+        終了日 : <input type="date" name="end" th:value="${end}">
         <input type="submit" value="絞り込み">
     </form>
 </div>
@@ -70,7 +70,7 @@
         <div class="comment-form">
             <form th:action="@{/comment/{contentId}(contentId=${content.id})}" th:method="post" th:object="${commentForm}">
                 <div class="form-area">
-                    <div class="errorMessages" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></div>
+                    <div class="errorMessages" th:if="${#fields.hasErrors('comment')} and ${content.id == errorId}" th:errors="*{comment}"></div>
                     <textarea class="tweet-box" th:field="${commentForm.comment}" size="20" maxlength="200" /></textarea><br/>
                     <input type="submit" value="コメント送信" />
                 </div>
